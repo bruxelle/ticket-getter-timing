@@ -1,0 +1,22 @@
+{
+  "name": "ticket-practice",
+  "version": "1.0.0",
+  "description": "Local Node.js / Playwright tools for generic site-profile based ticket operation verification.",
+  "main": "site_profile_runner.js",
+  "scripts": {
+    "check": "node --check site_profile_runner.js && node --check timing_assistant_server.js && node --check auto_selection_settings.js && node --check timing_assistant.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node timing_assistant_server.js",
+    "start:timing-assistant": "node timing_assistant_server.js",
+    "run:site-profile": "node site_profile_runner.js",
+    "run:auto-selection": "node site_profile_runner.js --auto-selection",
+    "login:auto-selection": "node site_profile_runner.js --login"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "playwright": "^1.59.1"
+  }
+}

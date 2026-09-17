@@ -1,0 +1,10 @@
+node_modules/
+logs/
+artifacts/
+screenshots/
+.playwright-user-data/
+auto_selection_settings.json
+.env
+*.zip
+*.trace.zip
+.DS_Store

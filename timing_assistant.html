@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timing Assistant</title>
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --panel: rgba(255, 251, 245, 0.94);
+      --ink: #1c2a27;
+      --muted: #586560;
+      --line: #d8cfc0;
+      --accent: #007a63;
+      --accent-strong: #005b49;
+      --accent-soft: #d7f0e9;
+      --warning: #a04a1a;
+      --danger-soft: #fff1e7;
+      --shadow: 0 24px 60px rgba(31, 42, 39, 0.12);
+      --radius: 22px;
+      --font-head: "Avenir Next", "Hiragino Sans", sans-serif;
+      --font-body: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font-body);
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(0, 122, 99, 0.22), transparent 32%),
+        radial-gradient(circle at bottom right, rgba(208, 136, 62, 0.18), transparent 28%),
+        linear-gradient(180deg, #f8f4ec 0%, #efe5d7 100%);
+    }
+
+    main {
+      width: min(1120px, calc(100% - 32px));
+      margin: 32px auto 56px;
+      display: grid;
+      gap: 22px;
+    }
+
+    .hero,
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero {
+      padding: 28px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      width: fit-content;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(0, 122, 99, 0.1);
+      color: var(--accent-strong);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      font-family: var(--font-head);
+      line-height: 1.1;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      max-width: 12ch;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+    }
+
+    h3 {
+      font-size: 1rem;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .hero-grid,
+    .layout {
+      display: grid;
+      gap: 22px;
+    }
+
+    .hero-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .hero-card,
+    .metric-card,
+    .info-card {
+      padding: 18px;
+      border-radius: 18px;
+      background: #fffdfa;
+      border: 1px solid var(--line);
+    }
+
+    .hero-card strong,
+    .metric-card strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .layout {
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .step {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-weight: 700;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+    }
+
+    .form-grid,
+    .metric-grid,
+    .info-grid,
+    .timeline {
+      display: grid;
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label,
+    .legend {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    input[type="text"],
+    input[type="url"],
+    input[type="datetime-local"],
+    input[type="number"],
+    select {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fffdfa;
+      color: var(--ink);
+      font: inherit;
+    }
+
+    input:focus,
+    select:focus {
+      outline: 3px solid rgba(0, 122, 99, 0.18);
+      border-color: rgba(0, 122, 99, 0.5);
+    }
+
+    .choice {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: #fffdfa;
+    }
+
+    .choice input {
+      accent-color: var(--accent);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      min-height: 48px;
+      padding: 0 22px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 120ms ease, opacity 120ms ease;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .primary {
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent-strong) 100%);
+      color: white;
+    }
+
+    .secondary {
+      background: #ece5d8;
+      color: var(--ink);
+    }
+
+    .status {
+      min-height: 72px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: #f3ede2;
+      border: 1px dashed rgba(88, 101, 96, 0.3);
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .status[data-tone="ok"] {
+      background: #ebfbf5;
+      color: var(--accent-strong);
+      border-style: solid;
+    }
+
+    .status[data-tone="warn"] {
+      background: var(--danger-soft);
+      color: var(--warning);
+      border-style: solid;
+    }
+
+    .status[data-tone="pending"] {
+      background: #eef5ff;
+      color: #1f4f8c;
+      border-style: solid;
+    }
+
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      font-family: var(--font-head);
+      color: var(--accent-strong);
+    }
+
+    .metric-subtext {
+      margin-top: 6px;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .timeline-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.94rem;
+    }
+
+    .timeline-row span:first-child {
+      color: var(--muted);
+    }
+
+    .disclaimer {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: #fff6f0;
+      border: 1px solid rgba(160, 74, 26, 0.2);
+    }
+
+    .disclaimer strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--warning);
+    }
+
+    code {
+      font-family: ui-monospace, "SFMono-Regular", monospace;
+      font-size: 0.95em;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <span class="eyebrow">Timed Open Assistant</span>
+      <h1>時刻補正つき URL オープン補助</h1>
+      <p>このページは、サーバー時刻との差分を見積もって、指定時刻に URL を開くタイミングを補助するツールです。第三者サイトの購入や申込フローの自動操作は行いません。</p>
+      <div class="hero-grid">
+        <div class="hero-card">
+          <strong>できること</strong>
+          <p>時刻補正、カウントダウン、複数回オープン、preconnect、実行状態の可視化。</p>
+        </div>
+        <div class="hero-card">
+          <strong>実行場所</strong>
+          <p>VSCode 上のローカルサーバーでも、同等の API を持つ Web 公開環境でも動かせます。</p>
+        </div>
+        <div class="hero-card">
+          <strong>境界</strong>
+          <p>URL を開く補助に限定します。他サイトの DOM 操作、巡回、自動購入は行いません。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="panel">
+        <div class="section-header">
+          <div>
+            <div class="step">1</div>
+            <h2>実行条件</h2>
+          </div>
+          <p>サーバー時刻との補正を使って、開くタイミングを調整します。</p>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="target-url">開きたい URL</label>
+            <input id="target-url" type="url" placeholder="https://example.com/release-page" value="https://example.com/release-page">
+          </div>
+
+          <div class="field">
+            <label for="target-datetime">目標時刻</label>
+            <input id="target-datetime" type="datetime-local">
+          </div>
+
+          <div class="field">
+            <label for="sync-samples">同期サンプル数</label>
+            <input id="sync-samples" type="number" min="1" max="7" step="1" value="3">
+          </div>
+
+          <div class="field">
+            <label for="open-mode">オープン方法</label>
+            <select id="open-mode">
+              <option value="new_tab">新しいタブで開く</option>
+              <option value="same_tab">同じタブで開く</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="open-count">オープン回数</label>
+            <input id="open-count" type="number" min="1" max="20" step="1" value="3">
+          </div>
+
+          <div class="field">
+            <label for="open-interval-ms">各オープンの間隔（ms）</label>
+            <input id="open-interval-ms" type="number" min="0" max="60000" step="10" value="250">
+          </div>
+
+          <label class="choice" for="enable-preconnect">
+            <input id="enable-preconnect" type="checkbox" checked>
+            <span>実行前に <code>preconnect</code> を追加する</span>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="sync-now" class="secondary" type="button">時刻を同期する</button>
+          <button id="arm-timer" class="primary" type="button">時刻補正して待機する</button>
+          <button id="cancel-timer" class="secondary" type="button" disabled>待機を解除する</button>
+        </div>
+
+        <div id="status-box" class="status" data-tone="pending" style="margin-top: 18px;">まずは時刻同期を行うか、そのまま待機を開始してください。</div>
+
+        <div class="disclaimer" style="margin-top: 16px;">
+          <strong>利用上の注意</strong>
+          <p>このツールは指定 URL を設定した回数だけ開く補助機能を提供します。対象サイトの利用規約を確認し、許可される範囲で使用してください。</p>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <div class="section-header">
+          <div>
+            <div class="step">2</div>
+            <h2>同期結果</h2>
+          </div>
+          <p>最小遅延サンプルを採用します。</p>
+        </div>
+
+        <div class="metric-grid">
+          <div class="metric-card">
+            <strong>推定オフセット</strong>
+            <div id="offset-value" class="metric-value">未取得</div>
+            <div id="offset-note" class="metric-subtext">サーバー時刻と手元の時計との差分です。</div>
+          </div>
+          <div class="metric-card">
+            <strong>最小往復遅延</strong>
+            <div id="delay-value" class="metric-value">未取得</div>
+            <div id="delay-note" class="metric-subtext">HTTP サンプルの中で最も小さい遅延を表示します。</div>
+          </div>
+          <div class="metric-card">
+            <strong>残り時間</strong>
+            <div id="countdown-value" class="metric-value">--</div>
+            <div id="countdown-note" class="metric-subtext">補正後のサーバー基準で表示します。</div>
+          </div>
+        </div>
+
+        <div class="info-grid" style="margin-top: 16px;">
+          <div class="info-card">
+            <h3>最新サンプル</h3>
+            <div class="timeline" style="margin-top: 12px;">
+              <div class="timeline-row"><span>サンプル数</span><strong id="sample-count">0</strong></div>
+              <div class="timeline-row"><span>採用ソース</span><strong id="sync-source">未取得</strong></div>
+              <div class="timeline-row"><span>補正後の発火時刻</span><strong id="fire-time">未設定</strong></div>
+              <div class="timeline-row"><span>オープン計画</span><strong id="open-plan">未設定</strong></div>
+              <div class="timeline-row"><span>最後の同期</span><strong id="last-sync-at">未同期</strong></div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script src="./timing_assistant.js"></script>
+</body>
+</html>

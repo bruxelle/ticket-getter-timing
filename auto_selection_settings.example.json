@@ -1,0 +1,46 @@
+{
+  "enabled": false,
+  "reloadBeforeApply": true,
+  "ticketType": "TICKET_TYPE_PLACEHOLDER",
+  "ticketTypeValue": "TICKET_TYPE_VALUE_PLACEHOLDER",
+  "quantity": "1",
+  "favoriteArtist": "FAVORITE_NAME_PLACEHOLDER",
+  "favoriteArtistValue": "FAVORITE_VALUE_PLACEHOLDER",
+  "paymentMethod": "コンビニ決済（前払い）",
+  "purchaser": {
+    "lastName": "LAST_NAME_PLACEHOLDER",
+    "firstName": "FIRST_NAME_PLACEHOLDER",
+    "phoneNumber": "PHONE_NUMBER_PLACEHOLDER"
+  },
+  "runtime": {
+    "keepBrowserOpenMs": 0,
+    "loginKeepBrowserOpenMs": 600000,
+    "captureFullPageScreenshot": true,
+    "captureTrace": false,
+    "requireFavorite": true,
+    "requireAuthenticated": true,
+    "userDataDir": ".playwright-user-data/auto-selection"
+  },
+  "siteDiscovery": {
+    "targetUrl": "https://example.com/event/placeholder",
+    "favoriteSourceUrl": "",
+    "sourceMode": "performers",
+    "performersSelector": "",
+    "ticketInfoSelector": "",
+    "favoriteArtistSelector": "#favorite-artist",
+    "learnedAt": "",
+    "ticketTypeOptions": [
+      {
+        "label": "TICKET_TYPE_PLACEHOLDER",
+        "value": "TICKET_TYPE_VALUE_PLACEHOLDER"
+      }
+    ],
+    "favoriteArtistOptions": [
+      {
+        "label": "FAVORITE_NAME_PLACEHOLDER",
+        "value": "FAVORITE_VALUE_PLACEHOLDER"
+      }
+    ],
+    "manualFavoriteOptions": []
+  }
+}

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Selection Settings</title>
+  <style>
+    :root {
+      --bg: #f7f3eb;
+      --panel: #fffdfa;
+      --ink: #1f2c29;
+      --muted: #5c6964;
+      --line: #d8cfc0;
+      --accent: #006f5c;
+      --accent-strong: #004f43;
+      --accent-soft: #e1f4ef;
+      --warn: #a04a1a;
+      --warn-soft: #fff2e8;
+      --radius: 16px;
+      --shadow: 0 20px 48px rgba(30, 43, 39, 0.1);
+      --font-head: "Avenir Next", "Hiragino Sans", sans-serif;
+      --font-body: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--font-body);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(247, 243, 235, 0.8)),
+        var(--bg);
+    }
+
+    main {
+      width: min(1040px, calc(100% - 32px));
+      margin: 28px auto 48px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .panel {
+      padding: 24px;
+      border-radius: var(--radius);
+      background: var(--panel);
+      border: 1px solid rgba(216, 207, 192, 0.92);
+      box-shadow: var(--shadow);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: start;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      font-family: var(--font-head);
+      line-height: 1.15;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+    }
+
+    h2 {
+      font-size: 1.15rem;
+    }
+
+    p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font-size: 0.82rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    form {
+      display: grid;
+      gap: 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label,
+    .legend {
+      font-weight: 700;
+      font-size: 0.94rem;
+    }
+
+    input[type="text"],
+    input[type="url"],
+    input[type="tel"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 11px 13px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 116px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: 3px solid rgba(0, 111, 92, 0.16);
+      border-color: rgba(0, 111, 92, 0.5);
+    }
+
+    .switch-row,
+    .choice-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 52px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .switch-row input,
+    .choice-row input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    button {
+      min-height: 48px;
+      border: 0;
+      border-radius: 999px;
+      padding: 0 22px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 120ms ease, opacity 120ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .primary {
+      color: #fff;
+      background: linear-gradient(180deg, var(--accent), var(--accent-strong));
+    }
+
+    .secondary {
+      color: var(--ink);
+      background: #ece5d8;
+    }
+
+    .status {
+      min-height: 58px;
+      padding: 14px 16px;
+      border: 1px dashed rgba(92, 105, 100, 0.35);
+      border-radius: 14px;
+      background: #f4eee5;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .status[data-tone="ok"] {
+      border-style: solid;
+      background: #ecfbf6;
+      color: var(--accent-strong);
+    }
+
+    .status[data-tone="warn"] {
+      border-style: solid;
+      background: var(--warn-soft);
+      color: var(--warn);
+    }
+
+    .stock-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .stock-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    code {
+      font-family: ui-monospace, "SFMono-Regular", monospace;
+      font-size: 0.95em;
+    }
+
+    @media (max-width: 760px) {
+      .header,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        display: grid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="panel">
+      <div class="header">
+        <div>
+          <span class="pill">Local Assisted Selection</span>
+          <h1>自動選択設定</h1>
+          <p>リロード後に券種、枚数、決済方法、入力欄を埋め、購入確定の手前で停止するためのローカル設定です。</p>
+        </div>
+        <span class="pill">保存先: <code>auto_selection_settings.json</code></span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <form id="settings-form">
+        <div class="field full">
+          <label class="switch-row" for="enabled">
+            <input id="enabled" name="enabled" type="checkbox">
+            <span>自動選択を使う</span>
+          </label>
+        </div>
+
+        <div class="field full">
+          <label class="switch-row" for="reload-before-apply">
+            <input id="reload-before-apply" name="reloadBeforeApply" type="checkbox">
+            <span>ページをリロードしてから自動選択を開始する</span>
+          </label>
+        </div>
+
+        <div>
+          <h2>チケット</h2>
+          <div class="grid" style="margin-top: 14px;">
+            <div class="field">
+              <label for="ticket-type">種類</label>
+              <select id="ticket-type" name="ticketType">
+                <option value="一般">一般</option>
+                <option value="学生">学生</option>
+                <option value="VIP">VIP</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="quantity">枚数</label>
+              <select id="quantity" name="quantity">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2>サイト候補学習</h2>
+          <div class="grid" style="margin-top: 14px;">
+            <div class="field full">
+              <label for="discovery-url">事前に読み込むサイトURL</label>
+              <input id="discovery-url" name="discoveryUrl" type="url" placeholder="https://example.com/release-page">
+            </div>
+
+            <div class="field full">
+              <label for="favorite-source-url">お目当て候補だけ学習する別公演URL</label>
+              <input id="favorite-source-url" name="favoriteSourceUrl" type="url" placeholder="空欄なら上のURLから取得">
+            </div>
+
+            <div class="field">
+              <label for="performers-selector">出演アーティスト欄セレクタ</label>
+              <input id="performers-selector" name="performersSelector" type="text" placeholder="#performing-artists">
+            </div>
+
+            <div class="field">
+              <label for="ticket-info-selector">販売情報欄セレクタ</label>
+              <input id="ticket-info-selector" name="ticketInfoSelector" type="text" placeholder="空欄なら自動検出">
+            </div>
+
+            <div class="field">
+              <label for="favorite-selector">販売後のお目当てセレクタ</label>
+              <input id="favorite-selector" name="favoriteArtistSelector" type="text" placeholder="#favorite-artist">
+            </div>
+
+            <div class="field">
+              <span class="legend">候補</span>
+              <button id="discover-favorite-options" class="secondary" type="button">出演・販売情報を取得</button>
+            </div>
+
+            <div class="field">
+              <span class="legend">別URL</span>
+              <button id="discover-favorite-only" class="secondary" type="button">お目当て候補だけ取得</button>
+            </div>
+          </div>
+          <div id="learned-options" class="stock-list" aria-live="polite"></div>
+        </div>
+
+        <div>
+          <h2>申込内容</h2>
+          <div class="grid" style="margin-top: 14px;">
+            <div class="field">
+              <label for="favorite-artist">お目当て</label>
+              <select id="favorite-artist" name="favoriteArtist">
+                <option value="アーティストA">アーティストA</option>
+                <option value="アーティストB">アーティストB</option>
+                <option value="アーティストC">アーティストC</option>
+              </select>
+            </div>
+
+            <div class="field full">
+              <label for="manual-favorite-options">手入力のお目当て候補（1行に1件）</label>
+              <textarea id="manual-favorite-options" name="manualFavoriteOptions" spellcheck="false" placeholder="例: メンバー名"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="payment-method">決済方法</label>
+              <select id="payment-method" name="paymentMethod">
+                <option value="クレジットカード">クレジットカード</option>
+                <option value="コンビニ決済（前払い）">コンビニ決済（前払い）</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="last-name">姓</label>
+              <input id="last-name" name="lastName" type="text" autocomplete="family-name">
+            </div>
+
+            <div class="field">
+              <label for="first-name">名</label>
+              <input id="first-name" name="firstName" type="text" autocomplete="given-name">
+            </div>
+
+            <div class="field">
+              <label for="phone-number">電話番号</label>
+              <input id="phone-number" name="phoneNumber" type="tel" inputmode="tel" autocomplete="tel">
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2>実行後</h2>
+          <div class="grid" style="margin-top: 14px;">
+            <div class="field">
+              <label for="keep-browser-open-ms">停止後にブラウザを残す時間（ms）</label>
+              <input id="keep-browser-open-ms" name="keepBrowserOpenMs" type="number" min="0" max="600000" step="1000">
+            </div>
+
+            <div class="field">
+              <span class="legend">記録</span>
+              <label class="choice-row" for="capture-full-page-screenshot">
+                <input id="capture-full-page-screenshot" name="captureFullPageScreenshot" type="checkbox">
+                <span>停止時のスクリーンショットを保存する</span>
+              </label>
+            </div>
+
+            <div class="field">
+              <span class="legend">trace</span>
+              <label class="choice-row" for="capture-trace">
+                <input id="capture-trace" name="captureTrace" type="checkbox">
+                <span>Playwright trace zip を保存する</span>
+              </label>
+            </div>
+
+            <div class="field">
+              <span class="legend">お目当て</span>
+              <label class="choice-row" for="require-favorite">
+                <input id="require-favorite" name="requireFavorite" type="checkbox">
+                <span>お目当てが選べない場合は停止する</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" type="submit">設定を保存</button>
+          <button id="reload-settings" class="secondary" type="button">再読み込み</button>
+          <button id="reset-defaults" class="secondary" type="button">既定値に戻す</button>
+        </div>
+
+        <div id="status-box" class="status" data-tone="pending">設定を読み込んでいます。</div>
+      </form>
+    </section>
+  </main>
+
+  <script src="./auto_selection_settings.js"></script>
+</body>
+</html>

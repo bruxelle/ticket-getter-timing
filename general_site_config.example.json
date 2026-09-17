@@ -1,0 +1,43 @@
+{
+  "mode": "web_public",
+  "targetUrl": "https://example.com/release-page",
+  "scheduledStartAt": "2026-05-01T10:00:00+09:00",
+  "timeZone": "Asia/Tokyo",
+  "timeSync": {
+    "enabled": true,
+    "strategy": "server_ntp_proxy",
+    "maxSamples": 3,
+    "timeoutMs": 1200
+  },
+  "execution": {
+    "type": "timed_open",
+    "openCount": 3,
+    "openIntervalMs": 250,
+    "preconnect": true,
+    "openInNewTab": true
+  },
+  "logging": {
+    "enabled": true,
+    "level": "info"
+  },
+  "compliance": {
+    "requireTermsConfirmation": true,
+    "singleAccessOnly": true
+  },
+  "localAutomation": {
+    "enabled": false,
+    "headless": false,
+    "keepBrowserOpenMs": 0
+  },
+  "siteProfile": {
+    "name": "example-release-page",
+    "allowedOrigins": [
+      "https://example.com"
+    ],
+    "preconnectOrigins": [
+      "https://example.com"
+    ],
+    "selectors": {},
+    "steps": []
+  }
+}
